@@ -1,9 +1,9 @@
 import React from 'react';
 
-function Home() {
+function Home({ user, token }) {
     return (
         <div>
-            <h1>Home Page</h1>
+            <h1>Welcome {user.name}</h1>
         </div>
     );
 }
