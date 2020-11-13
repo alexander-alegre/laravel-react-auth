@@ -84423,10 +84423,11 @@ var App = function App() {
           setToken(_token);
           setUser(_user);
           Object(_helpers_cookie__WEBPACK_IMPORTED_MODULE_11__["loginSuccessful"])(_user, _token);
-          return history.push('/home', {
+          history.push('/home', {
             user: _user,
             token: _token
           });
+          return location.reload();
         }
       })["catch"](function (e) {
         return console.error(e.message);
@@ -84459,10 +84460,8 @@ var App = function App() {
           setToken(_token2);
           setUser(_user2);
           Object(_helpers_cookie__WEBPACK_IMPORTED_MODULE_11__["loginSuccessful"])(_user2, _token2);
-          return history.push('/home', {
-            user: _user2,
-            token: _token2
-          });
+          history.push('/home');
+          location.reload();
         }
       })["catch"](function (e) {
         return console.error(e.message);
@@ -84481,7 +84480,8 @@ var App = function App() {
     }).then(function (res) {
       console.log(res);
       Object(_helpers_cookie__WEBPACK_IMPORTED_MODULE_11__["logoutSuccessful"])();
-      return history.push('/login');
+      history.push('/login');
+      return location.reload();
     })["catch"](function (e) {
       return console.error(e.message);
     });

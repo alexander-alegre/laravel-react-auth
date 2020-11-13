@@ -37,7 +37,7 @@ const App = () => {
             setToken(cookie.token);
             setUser(cookie.user);
         }
-    }, [])
+    }, []);
 
     const onNameChange = e => {
         setName(e.target.value);
@@ -73,7 +73,8 @@ const App = () => {
                         setToken(token);
                         setUser(user);
                         loginSuccessful(user, token);
-                        return history.push('/home', { user, token });
+                        history.push('/home', { user, token });
+                        return location.reload();
                     }
                 })
                 .catch(e => console.error(e.message));
@@ -104,7 +105,8 @@ const App = () => {
                         setToken(token);
                         setUser(user);
                         loginSuccessful(user, token);
-                        return history.push('/home', { user, token });
+                        history.push('/home');
+                        location.reload();
                     }
                 })
                 .catch(e => console.error(e.message));
@@ -122,7 +124,8 @@ const App = () => {
             .then(res => {
                 console.log(res);
                 logoutSuccessful();
-                return history.push('/login');
+                history.push('/login');
+                return location.reload();
             })
             .catch(e => console.error(e.message));
     };
