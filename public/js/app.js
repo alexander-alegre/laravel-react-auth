@@ -19846,6 +19846,184 @@ return jQuery;
 
 /***/ }),
 
+/***/ "./node_modules/js-cookie/src/js.cookie.js":
+/*!*************************************************!*\
+  !*** ./node_modules/js-cookie/src/js.cookie.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * JavaScript Cookie v2.2.1
+ * https://github.com/js-cookie/js-cookie
+ *
+ * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+ * Released under the MIT license
+ */
+;(function (factory) {
+	var registeredInModuleLoader;
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		registeredInModuleLoader = true;
+	}
+	if (true) {
+		module.exports = factory();
+		registeredInModuleLoader = true;
+	}
+	if (!registeredInModuleLoader) {
+		var OldCookies = window.Cookies;
+		var api = window.Cookies = factory();
+		api.noConflict = function () {
+			window.Cookies = OldCookies;
+			return api;
+		};
+	}
+}(function () {
+	function extend () {
+		var i = 0;
+		var result = {};
+		for (; i < arguments.length; i++) {
+			var attributes = arguments[ i ];
+			for (var key in attributes) {
+				result[key] = attributes[key];
+			}
+		}
+		return result;
+	}
+
+	function decode (s) {
+		return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);
+	}
+
+	function init (converter) {
+		function api() {}
+
+		function set (key, value, attributes) {
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			attributes = extend({
+				path: '/'
+			}, api.defaults, attributes);
+
+			if (typeof attributes.expires === 'number') {
+				attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
+			}
+
+			// We're using "expires" because "max-age" is not supported by IE
+			attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+			try {
+				var result = JSON.stringify(value);
+				if (/^[\{\[]/.test(result)) {
+					value = result;
+				}
+			} catch (e) {}
+
+			value = converter.write ?
+				converter.write(value, key) :
+				encodeURIComponent(String(value))
+					.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+
+			key = encodeURIComponent(String(key))
+				.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+				.replace(/[\(\)]/g, escape);
+
+			var stringifiedAttributes = '';
+			for (var attributeName in attributes) {
+				if (!attributes[attributeName]) {
+					continue;
+				}
+				stringifiedAttributes += '; ' + attributeName;
+				if (attributes[attributeName] === true) {
+					continue;
+				}
+
+				// Considers RFC 6265 section 5.2:
+				// ...
+				// 3.  If the remaining unparsed-attributes contains a %x3B (";")
+				//     character:
+				// Consume the characters of the unparsed-attributes up to,
+				// not including, the first %x3B (";") character.
+				// ...
+				stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
+			}
+
+			return (document.cookie = key + '=' + value + stringifiedAttributes);
+		}
+
+		function get (key, json) {
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			var jar = {};
+			// To prevent the for loop in the first place assign an empty array
+			// in case there are no cookies at all.
+			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			var i = 0;
+
+			for (; i < cookies.length; i++) {
+				var parts = cookies[i].split('=');
+				var cookie = parts.slice(1).join('=');
+
+				if (!json && cookie.charAt(0) === '"') {
+					cookie = cookie.slice(1, -1);
+				}
+
+				try {
+					var name = decode(parts[0]);
+					cookie = (converter.read || converter)(cookie, name) ||
+						decode(cookie);
+
+					if (json) {
+						try {
+							cookie = JSON.parse(cookie);
+						} catch (e) {}
+					}
+
+					jar[name] = cookie;
+
+					if (key === name) {
+						break;
+					}
+				} catch (e) {}
+			}
+
+			return key ? jar[key] : jar;
+		}
+
+		api.set = set;
+		api.get = function (key) {
+			return get(key, false /* read as raw */);
+		};
+		api.getJSON = function (key) {
+			return get(key, true /* read as json */);
+		};
+		api.remove = function (key, attributes) {
+			set(key, '', extend(attributes, {
+				expires: -1
+			}));
+		};
+
+		api.defaults = {};
+
+		api.withConverter = init;
+
+		return api;
+	}
+
+	return init(function () {});
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/lodash/lodash.js":
 /*!***************************************!*\
   !*** ./node_modules/lodash/lodash.js ***!
@@ -84124,6 +84302,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Login__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Login */ "./resources/js/containers/Login.js");
 /* harmony import */ var _Welcome__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Welcome */ "./resources/js/containers/Welcome.js");
 /* harmony import */ var _Register__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Register */ "./resources/js/containers/Register.js");
+/* harmony import */ var _helpers_cookie__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../helpers/cookie */ "./resources/js/helpers/cookie.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -84135,6 +84314,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -84195,7 +84375,14 @@ var App = function App() {
       passwordConfirmation = _useState18[0],
       setPasswordConfirmation = _useState18[1];
 
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {// get initial data from server if any is required
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    // set cookie if available
+    var cookie = Object(_helpers_cookie__WEBPACK_IMPORTED_MODULE_11__["getLoginCookie"])(); // TODO: check if the token is valid, need API endpoint
+
+    if (cookie) {
+      setToken(cookie.token);
+      setUser(cookie.user);
+    }
   }, []);
 
   var onNameChange = function onNameChange(e) {
@@ -84230,12 +84417,15 @@ var App = function App() {
         }
 
         if (res.status === 200 && res.data && res.data.token) {
-          // successfully logged in
-          setToken(res.data.token);
-          setUser(res.data.user);
+          var _token = res.data.token;
+          var _user = res.data.user; // successfully logged in
+
+          setToken(_token);
+          setUser(_user);
+          Object(_helpers_cookie__WEBPACK_IMPORTED_MODULE_11__["loginSuccessful"])(_user, _token);
           return history.push('/home', {
-            user: user,
-            token: token
+            user: _user,
+            token: _token
           });
         }
       })["catch"](function (e) {
@@ -84263,12 +84453,15 @@ var App = function App() {
         }
 
         if (res.status === 200 && res.data && res.data.token) {
-          // successfully logged in
-          setToken(res.data.token);
-          setUser(res.data.user);
+          var _token2 = res.data.token;
+          var _user2 = res.data.user; // successfully logged in
+
+          setToken(_token2);
+          setUser(_user2);
+          Object(_helpers_cookie__WEBPACK_IMPORTED_MODULE_11__["loginSuccessful"])(_user2, _token2);
           return history.push('/home', {
-            user: user,
-            token: token
+            user: _user2,
+            token: _token2
           });
         }
       })["catch"](function (e) {
@@ -84287,6 +84480,7 @@ var App = function App() {
       }
     }).then(function (res) {
       console.log(res);
+      Object(_helpers_cookie__WEBPACK_IMPORTED_MODULE_11__["logoutSuccessful"])();
       return history.push('/login');
     })["catch"](function (e) {
       return console.error(e.message);
@@ -84540,6 +84734,42 @@ function Welcome() {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Welcome);
+
+/***/ }),
+
+/***/ "./resources/js/helpers/cookie.js":
+/*!****************************************!*\
+  !*** ./resources/js/helpers/cookie.js ***!
+  \****************************************/
+/*! exports provided: loginSuccessful, logoutSuccessful, getLoginCookie */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loginSuccessful", function() { return loginSuccessful; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "logoutSuccessful", function() { return logoutSuccessful; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLoginCookie", function() { return getLoginCookie; });
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/src/js.cookie.js");
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(js_cookie__WEBPACK_IMPORTED_MODULE_0__);
+
+var loginSuccessful = function loginSuccessful(user, token) {
+  js_cookie__WEBPACK_IMPORTED_MODULE_0___default.a.set('auth', {
+    user: user,
+    token: token
+  });
+};
+var logoutSuccessful = function logoutSuccessful() {
+  js_cookie__WEBPACK_IMPORTED_MODULE_0___default.a.remove('auth');
+};
+var getLoginCookie = function getLoginCookie() {
+  var cookie = js_cookie__WEBPACK_IMPORTED_MODULE_0___default.a.get('auth');
+
+  if (cookie) {
+    return JSON.parse(js_cookie__WEBPACK_IMPORTED_MODULE_0___default.a.get('auth'));
+  }
+
+  return cookie;
+};
 
 /***/ }),
 

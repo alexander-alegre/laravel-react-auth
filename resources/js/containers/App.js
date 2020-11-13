@@ -14,6 +14,7 @@ import Home from './Home';
 import Login from './Login';
 import Welcome from './Welcome';
 import Register from './Register';
+import { getLoginCookie, loginSuccessful, logoutSuccessful } from '../helpers/cookie';
 
 const history = createBrowserHistory();
 
@@ -29,7 +30,13 @@ const App = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
     useEffect(() => {
-        // get initial data from server if any is required
+        // set cookie if available
+        const cookie = getLoginCookie();
+        // TODO: check if the token is valid, need API endpoint
+        if (cookie) {
+            setToken(cookie.token);
+            setUser(cookie.user);
+        }
     }, [])
 
     const onNameChange = e => {
@@ -60,9 +67,12 @@ const App = () => {
                         res.data.errors.email && setEmailError(res.data.errors.email);
                     }
                     if (res.status === 200 && res.data && res.data.token) {
+                        const token = res.data.token;
+                        const user = res.data.user;
                         // successfully logged in
-                        setToken(res.data.token);
-                        setUser(res.data.user);
+                        setToken(token);
+                        setUser(user);
+                        loginSuccessful(user, token);
                         return history.push('/home', { user, token });
                     }
                 })
@@ -88,9 +98,12 @@ const App = () => {
                         res.data.errors.password && setPasswordError(res.data.errors.password);
                     }
                     if (res.status === 200 && res.data && res.data.token) {
+                        const token = res.data.token;
+                        const user = res.data.user;
                         // successfully logged in
-                        setToken(res.data.token);
-                        setUser(res.data.user);
+                        setToken(token);
+                        setUser(user);
+                        loginSuccessful(user, token);
                         return history.push('/home', { user, token });
                     }
                 })
@@ -108,6 +121,7 @@ const App = () => {
         })
             .then(res => {
                 console.log(res);
+                logoutSuccessful();
                 return history.push('/login');
             })
             .catch(e => console.error(e.message));
